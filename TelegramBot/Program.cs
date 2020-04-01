@@ -22,7 +22,7 @@ namespace TelegramBot
             "Укажи, пожалуйста, дату рождения Число/Месяц/Год рождения",
             "Гражданство",
             "Медицинская книжка",
-            "Анкета заполнена, спасибо"
+            "Анкета заполнена, благодарим вас за проявленный интерес"
         };
 
         private static string[] _answers = new string[7];
@@ -53,7 +53,14 @@ namespace TelegramBot
             string name = $"{e.CallbackQuery.From.FirstName} {e.CallbackQuery.From.LastName}";
             Console.WriteLine($"{name} нажал: {buttonText}");
 
-            await _botClient.AnswerCallbackQueryAsync(e.CallbackQuery.Id, $"Вы нажали кнопку {buttonText}");
+            if (buttonText == "Заполнить у бота")
+            {
+                var messageId = e.CallbackQuery.From.Id;
+                userDictionary.Add(messageId, 0);
+                userDictionaryAnswers.Add(messageId, new string[7]);
+                await _botClient.SendTextMessageAsync(messageId, _questions[userDictionary[messageId]]);
+            }
+
         }
 
         private static async void BotOnMessageRecived(object? sender, MessageEventArgs e)
@@ -78,16 +85,21 @@ namespace TelegramBot
                 case "/start":
                     string hello = @"Список команд:
 /start - запуск бота
-/inline - вывод меню
 /QR - заполнить анкету";
                     await _botClient.SendTextMessageAsync(message.From.Id, hello);
-                    break;
-                case "/inline":
-                    var inlineKeyboard = new InlineKeyboardMarkup(new[]
-                    {
-                        InlineKeyboardButton.WithUrl("Анкета на сайте",
-                            "https://docs.google.com/forms/d/e/1FAIpQLSfQxh28HQ600V2cVyh6GXDaQUzVQpnjkWQwEQkmQwkYfnyRpg/viewform"),
-                    });
+                    var inlineKeyboard = new InlineKeyboardMarkup(
+                        new[]
+                        {
+                            new[]
+                            {
+                                InlineKeyboardButton.WithUrl("Анкета на сайте",
+                                    "https://docs.google.com/forms/d/e/1FAIpQLSfQxh28HQ600V2cVyh6GXDaQUzVQpnjkWQwEQkmQwkYfnyRpg/viewform"),
+                            },
+                            new[]
+                            {
+                                InlineKeyboardButton.WithCallbackData("Заполнить у бота")
+                            }
+                        });
                     await _botClient.SendTextMessageAsync(message.From.Id, "Выберите пункт меню",
                         replyMarkup: inlineKeyboard);
                     break;
@@ -114,9 +126,23 @@ namespace TelegramBot
                 userDictionaryAnswers.Remove(fromId);
                 string hello = @"Список команд:
 /start - запуск бота
-/inline - вывод меню
 /QR - заполнить анкету";
                 _botClient.SendTextMessageAsync(fromId, hello);
+                var inlineKeyboard = new InlineKeyboardMarkup(
+                    new[]
+                    {
+                        new[]
+                        {
+                            InlineKeyboardButton.WithUrl("Анкета на сайте",
+                                "https://docs.google.com/forms/d/e/1FAIpQLSfQxh28HQ600V2cVyh6GXDaQUzVQpnjkWQwEQkmQwkYfnyRpg/viewform"),
+                        },
+                        new[]
+                        {
+                            InlineKeyboardButton.WithCallbackData("Заполнить у бота")
+                        }
+                    });
+                _botClient.SendTextMessageAsync(fromId, "Выберите пункт меню",
+                    replyMarkup: inlineKeyboard);
             }
         }
 
@@ -125,7 +151,7 @@ namespace TelegramBot
             var chatId = 173111653; //Саша
             chatId = 1293493721; //Саша2
             var new_chatId = "-1001283303838"; //группа
-            // chatId = 575903766;
+            // chatId = 575903766; //Я
             string text = "Новая анкета!\n" + string.Join('\n', answers);
             await _botClient.SendTextMessageAsync(new_chatId, text);
         }
