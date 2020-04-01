@@ -1,0 +1,15 @@
+C:\Users\Usver\RiderProjects\TelegramBot\TelegramBot\bin\Debug\netcoreapp3.1\TelegramBot.exe
+C:\Users\Usver\RiderProjects\TelegramBot\TelegramBot\bin\Debug\netcoreapp3.1\TelegramBot.deps.json
+C:\Users\Usver\RiderProjects\TelegramBot\TelegramBot\bin\Debug\netcoreapp3.1\TelegramBot.runtimeconfig.json
+C:\Users\Usver\RiderProjects\TelegramBot\TelegramBot\bin\Debug\netcoreapp3.1\TelegramBot.runtimeconfig.dev.json
+C:\Users\Usver\RiderProjects\TelegramBot\TelegramBot\bin\Debug\netcoreapp3.1\TelegramBot.dll
+C:\Users\Usver\RiderProjects\TelegramBot\TelegramBot\bin\Debug\netcoreapp3.1\TelegramBot.pdb
+C:\Users\Usver\RiderProjects\TelegramBot\TelegramBot\bin\Debug\netcoreapp3.1\MihaZupan.HttpToSocks5Proxy.dll
+C:\Users\Usver\RiderProjects\TelegramBot\TelegramBot\bin\Debug\netcoreapp3.1\Newtonsoft.Json.dll
+C:\Users\Usver\RiderProjects\TelegramBot\TelegramBot\bin\Debug\netcoreapp3.1\Telegram.Bot.dll
+C:\Users\Usver\RiderProjects\TelegramBot\TelegramBot\obj\Debug\netcoreapp3.1\TelegramBot.csprojAssemblyReference.cache
+C:\Users\Usver\RiderProjects\TelegramBot\TelegramBot\obj\Debug\netcoreapp3.1\TelegramBot.AssemblyInfoInputs.cache
+C:\Users\Usver\RiderProjects\TelegramBot\TelegramBot\obj\Debug\netcoreapp3.1\TelegramBot.AssemblyInfo.cs
+C:\Users\Usver\RiderProjects\TelegramBot\TelegramBot\obj\Debug\netcoreapp3.1\TelegramBot.csproj.CopyComplete
+C:\Users\Usver\RiderProjects\TelegramBot\TelegramBot\obj\Debug\netcoreapp3.1\TelegramBot.dll
+C:\Users\Usver\RiderProjects\TelegramBot\TelegramBot\obj\Debug\netcoreapp3.1\TelegramBot.pdb

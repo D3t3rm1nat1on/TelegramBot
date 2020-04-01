@@ -37,6 +37,16 @@
       },
       "frameworks": {
         "netcoreapp3.1": {
+          "dependencies": {
+            "HttpToSocks5Proxy": {
+              "target": "Package",
+              "version": "[1.4.0, )"
+            },
+            "Telegram.Bot": {
+              "target": "Package",
+              "version": "[15.4.0, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",
