@@ -7,16 +7,15 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-using System;
 using System.Reflection;
 
-[assembly: System.Reflection.AssemblyCompanyAttribute("TelegramBot")]
-[assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
-[assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
-[assembly: System.Reflection.AssemblyProductAttribute("TelegramBot")]
-[assembly: System.Reflection.AssemblyTitleAttribute("TelegramBot")]
-[assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
+[assembly: AssemblyCompany("TelegramBot")]
+[assembly: AssemblyConfiguration("Debug")]
+[assembly: AssemblyFileVersion("1.0.0.0")]
+[assembly: AssemblyInformationalVersion("1.0.0")]
+[assembly: AssemblyProduct("TelegramBot")]
+[assembly: AssemblyTitle("TelegramBot")]
+[assembly: AssemblyVersion("1.0.0.0")]
 
 // Создано классом WriteCodeFragment MSBuild.
 

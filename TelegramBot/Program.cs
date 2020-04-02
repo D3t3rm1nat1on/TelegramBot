@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using MihaZupan;
 using Telegram.Bot;
 using Telegram.Bot.Args;
-using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
 
@@ -13,19 +12,18 @@ namespace TelegramBot
     {
         private static TelegramBotClient _botClient;
 
-        private static string[] _questions = new[]
-        {
-            "Как мы можем к тебе обращаться? Напиши свои фамилию и имя",
-            "Пожалуйста, напиши свой мобильный телефон, чтобы могли с тобой связаться и обсудить все детали",
-            "Пожалуйста, укажи, в какой компании ты сейчас работаешь",
-            "Пожалуйста, укажи название города, чтобы мы могли подобрать для тебя ближайшую открытую вакансию",
-            "Укажи, пожалуйста, дату рождения Число/Месяц/Год рождения",
-            "Гражданство",
-            "Медицинская книжка",
-            "Анкета заполнена, благодарим вас за проявленный интерес"
+        private static string[] _questions = {
+            "Как мы можем к тебе обращаться? Напиши свои Фамилию и Имя.",
+            "Пожалуйста, напиши свой мобильный телефон, чтобы могли с тобой связаться и обсудить все детали.",
+            "Напиши, пожалуйста, в какой компании ты сейчас работаешь.",
+            "Пожалуйста, напиши свой город, чтобы мы могли подобрать для тебя ближайшую открытую вакансию.",
+            "Напиши, пожалуйста, свою дату рождения: Число/Месяц/Год рождения.",
+            "Напиши, пожалуйста, свое гражданство.",
+            "У тебя есть Мед.Книжка?",
+            "Спасибо за ответы, мы получили твою анкету!\n" +
+            "Мы свяжемся с тобой в ближайшее время, чтобы обсудить все детали.\n" +
+            "Хорошего дня!"
         };
-
-        private static string[] _answers = new string[7];
 
         private static Dictionary<int, string[]> userDictionaryAnswers = new Dictionary<int, string[]>();
 
@@ -34,7 +32,8 @@ namespace TelegramBot
         static void Main(string[] args)
         {
             var proxy = new HttpToSocks5Proxy("154.95.16.184", 443);
-            _botClient = new TelegramBotClient("1204106611:AAEctHiDVZ6dmreSFI_w2OFMU0GKHc3gaTI", proxy);
+            //1204106611:AAEctHiDVZ6dmreSFI_w2OFMU0GKHc3gaTI
+            _botClient = new TelegramBotClient("1177094519:AAGJBqg0hAV_CiYLPnEae_dsYeAHBdscp5k", proxy);
             _botClient.OnMessage += BotOnMessageRecived;
             _botClient.OnCallbackQuery += BotOnCallbackQueryRecived;
             var me = _botClient.GetMeAsync().Result;
@@ -53,14 +52,20 @@ namespace TelegramBot
             string name = $"{e.CallbackQuery.From.FirstName} {e.CallbackQuery.From.LastName}";
             Console.WriteLine($"{name} нажал: {buttonText}");
 
+            var messageId = e.CallbackQuery.From.Id;
+
+            if (userDictionary.ContainsKey(e.CallbackQuery.From.Id))
+            {
+                await _botClient.SendTextMessageAsync(messageId, "*Вы уже заполняете анкету*");
+                return;
+            }
+
             if (buttonText == "Заполнить у бота")
             {
-                var messageId = e.CallbackQuery.From.Id;
                 userDictionary.Add(messageId, 0);
                 userDictionaryAnswers.Add(messageId, new string[7]);
                 await _botClient.SendTextMessageAsync(messageId, _questions[userDictionary[messageId]]);
             }
-
         }
 
         private static async void BotOnMessageRecived(object? sender, MessageEventArgs e)
@@ -83,32 +88,14 @@ namespace TelegramBot
             switch (text)
             {
                 case "/start":
-                    string hello = @"Список команд:
-/start - запуск бота
-/QR - заполнить анкету";
+                    string hello = "Привет :)\n" +
+                                   "Чтобы найти для тебя самую подходящую вакансию мы хотели бы задать несколько уточняющих вопросов, это займет не более 1 минуты.";
                     await _botClient.SendTextMessageAsync(message.From.Id, hello);
-                    var inlineKeyboard = new InlineKeyboardMarkup(
-                        new[]
-                        {
-                            new[]
-                            {
-                                InlineKeyboardButton.WithUrl("Анкета на сайте",
-                                    "https://docs.google.com/forms/d/e/1FAIpQLSfQxh28HQ600V2cVyh6GXDaQUzVQpnjkWQwEQkmQwkYfnyRpg/viewform"),
-                            },
-                            new[]
-                            {
-                                InlineKeyboardButton.WithCallbackData("Заполнить у бота")
-                            }
-                        });
-                    await _botClient.SendTextMessageAsync(message.From.Id, "Выберите пункт меню",
-                        replyMarkup: inlineKeyboard);
+                    Hello(message.From.Id);
+                    string dataMessage =
+                        "Обращаем внимание, что продолжая наше общение, в соответствии с требованиями статьи 9 Федерального закона от 27.07.2006 № 152-ФЗ «О персональных данных», ты подтверждаешь свое согласие на обработку персональных данных компанией ООО \"АШАН\"";
+                    await _botClient.SendTextMessageAsync(message.From.Id, dataMessage);
                     break;
-                case "/QR":
-                    userDictionary.Add(message.From.Id, 0);
-                    userDictionaryAnswers.Add(message.From.Id, new string[7]);
-                    await _botClient.SendTextMessageAsync(message.From.Id, _questions[userDictionary[message.From.Id]]);
-                    break;
-
             }
         }
 
@@ -124,25 +111,7 @@ namespace TelegramBot
                 Send(next);
                 userDictionary.Remove(fromId);
                 userDictionaryAnswers.Remove(fromId);
-                string hello = @"Список команд:
-/start - запуск бота
-/QR - заполнить анкету";
-                _botClient.SendTextMessageAsync(fromId, hello);
-                var inlineKeyboard = new InlineKeyboardMarkup(
-                    new[]
-                    {
-                        new[]
-                        {
-                            InlineKeyboardButton.WithUrl("Анкета на сайте",
-                                "https://docs.google.com/forms/d/e/1FAIpQLSfQxh28HQ600V2cVyh6GXDaQUzVQpnjkWQwEQkmQwkYfnyRpg/viewform"),
-                        },
-                        new[]
-                        {
-                            InlineKeyboardButton.WithCallbackData("Заполнить у бота")
-                        }
-                    });
-                _botClient.SendTextMessageAsync(fromId, "Выберите пункт меню",
-                    replyMarkup: inlineKeyboard);
+                Hello(fromId);
             }
         }
 
@@ -154,6 +123,27 @@ namespace TelegramBot
             // chatId = 575903766; //Я
             string text = "Новая анкета!\n" + string.Join('\n', answers);
             await _botClient.SendTextMessageAsync(new_chatId, text);
+        }
+
+        private static async void Hello(int messageId)
+        {
+            var inlineKeyboard = new InlineKeyboardMarkup(
+                new[]
+                {
+                    new[]
+                    {
+                        InlineKeyboardButton.WithUrl("Анкета на сайте",
+                            "https://docs.google.com/forms/d/e/1FAIpQLSfQxh28HQ600V2cVyh6GXDaQUzVQpnjkWQwEQkmQwkYfnyRpg/viewform"),
+                        InlineKeyboardButton.WithCallbackData("Заполнить у бота")
+                    },
+                    new[]
+                    {
+                        InlineKeyboardButton.WithUrl("Положение о персональных данных",
+                            "https://www.auchan.ru/pokupki/personalnye-dannye.html?ndspecialkey=1")
+                    }
+                });
+            await _botClient.SendTextMessageAsync(messageId, "Выберите пункт меню",
+                replyMarkup: inlineKeyboard);
         }
     }
 }
